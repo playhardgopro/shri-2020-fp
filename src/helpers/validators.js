@@ -12,7 +12,18 @@
  *
  * Если какие либо функции написаны руками (без использования библиотек) это не является ошибкой
  */
-import { compose, allPass, anyPass, propEq, __, not } from 'ramda';
+import {
+  compose,
+  allPass,
+  anyPass,
+  propEq,
+  __,
+  not,
+  eqProps,
+  prop,
+  equals,
+  and,
+} from 'ramda';
 
 //#region shapes
 const isStar = propEq('star');
@@ -124,4 +135,11 @@ export const validateFieldN9 = (obj) => {
 };
 
 // 10. Треугольник и квадрат одного цвета (не белого)
-export const validateFieldN10 = () => false;
+export const validateFieldN10 = (obj) => {
+  const triangleColor = prop('triangle', obj);
+  const squareColor = prop('square', obj);
+  const triangleAndSquareHaveSameColor = equals(triangleColor, squareColor);
+  const triangleColorIsNotWhite = not(equals(triangleColor, 'white'));
+
+  return and(triangleAndSquareHaveSameColor, triangleColorIsNotWhite);
+};
