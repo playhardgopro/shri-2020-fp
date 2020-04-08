@@ -23,6 +23,10 @@ import {
   prop,
   equals,
   and,
+  values,
+  filter,
+  gte,
+  length,
 } from 'ramda';
 
 //#region shapes
@@ -80,15 +84,17 @@ export const validateFieldN1 = (obj) => {
 
 // 2. Как минимум две фигуры зеленые.
 export const validateFieldN2 = (obj) => {
-  console.log(obj, 'obj');
-
-  const isQueenOfSpades = allPass([isStarGreen, isSquareGreen]);
-  console.log(isQueenOfSpades(obj), 'isStar');
-  return isQueenOfSpades(obj);
+  const colorsOfAllShapes = values(obj);
+  const isGreen = (shape) => shape === 'green';
+  const greenShapes = filter(isGreen, colorsOfAllShapes);
+  return gte(length(greenShapes), 2);
 };
 
 // 3. Количество красных фигур равно кол-ву синих.
-export const validateFieldN3 = () => false;
+export const validateFieldN3 = (obj) => {
+  const triangleColor = prop('triangle', obj);
+  const squareColor = prop('square', obj);
+};
 
 // 4. Синий круг, красная звезда, оранжевый квадрат
 export const validateFieldN4 = (obj) => {
