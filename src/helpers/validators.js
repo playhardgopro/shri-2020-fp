@@ -13,13 +13,10 @@
  * Если какие либо функции написаны руками (без использования библиотек) это не является ошибкой
  */
 import {
-  compose,
   allPass,
   anyPass,
   propEq,
-  __,
   not,
-  eqProps,
   prop,
   equals,
   and,
@@ -37,6 +34,7 @@ const isCircle = propEq('circle');
 //#endregion
 
 //#region green
+const isGreen = (shape) => shape === 'green';
 const isStarGreen = isStar('green');
 const isSquareGreen = isSquare('green');
 const isTriangleGreen = isTriangle('green');
@@ -44,6 +42,7 @@ const isCircleGreen = isCircle('green');
 //#endregion
 
 //#region orange
+const isOrange = (shape) => shape === 'orange';
 const isStarOrange = isStar('orange');
 const isSquareOrange = isSquare('orange');
 const isTriangleOrange = isTriangle('orange');
@@ -51,6 +50,7 @@ const isCircleOrange = isCircle('orange');
 //#endregion
 
 //#region white
+const isWhite = (shape) => shape === 'white';
 const isStarWhite = isStar('white');
 const isSquareWhite = isSquare('white');
 const isTriangleWhite = isTriangle('white');
@@ -58,6 +58,7 @@ const isCircleWhite = isCircle('white');
 //#endregion
 
 //#region red
+const isRed = (shape) => shape === 'red';
 const isStarRed = isStar('red');
 const isSquareRed = isSquare('red');
 const isTriangleRed = isTriangle('red');
@@ -65,6 +66,7 @@ const isCircleRed = isCircle('red');
 //#endregion
 
 //#region blue
+const isBlue = (shape) => shape === 'blue';
 const isStarBlue = isStar('blue');
 const isSquareBlue = isSquare('blue');
 const isTriangleBlue = isTriangle('blue');
@@ -85,15 +87,16 @@ export const validateFieldN1 = (obj) => {
 // 2. Как минимум две фигуры зеленые.
 export const validateFieldN2 = (obj) => {
   const colorsOfAllShapes = values(obj);
-  const isGreen = (shape) => shape === 'green';
   const greenShapes = filter(isGreen, colorsOfAllShapes);
   return gte(length(greenShapes), 2);
 };
 
 // 3. Количество красных фигур равно кол-ву синих.
 export const validateFieldN3 = (obj) => {
-  const triangleColor = prop('triangle', obj);
-  const squareColor = prop('square', obj);
+  const colorsOfAllShapes = values(obj);
+  const redShapesAmount = length(filter(isRed, colorsOfAllShapes));
+  const blueShapesAmount = length(filter(isBlue, colorsOfAllShapes));
+  return equals(redShapesAmount, blueShapesAmount);
 };
 
 // 4. Синий круг, красная звезда, оранжевый квадрат
