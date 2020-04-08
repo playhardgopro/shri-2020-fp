@@ -49,6 +49,13 @@ const isTriangleRed = isTriangle('red');
 const isCircleRed = isCircle('red');
 //#endregion
 
+//#region blue
+const isStarBlue = isStar('blue');
+const isSquareBlue = isSquare('blue');
+const isTriangleBlue = isTriangle('blue');
+const isCircleBlue = isCircle('blue');
+//#endregion
+
 // 1. Красная звезда, зеленый квадрат, все остальные белые.
 export const validateFieldN1 = (obj) => {
   const redStarAndGreenSquare = allPass([
@@ -73,7 +80,14 @@ export const validateFieldN2 = (obj) => {
 export const validateFieldN3 = () => false;
 
 // 4. Синий круг, красная звезда, оранжевый квадрат
-export const validateFieldN4 = () => false;
+export const validateFieldN4 = (obj) => {
+  const blueCircleAndRedStarAndOrangeSquare = allPass([
+    isCircleBlue,
+    isStarRed,
+    isSquareOrange,
+  ]);
+  return blueCircleAndRedStarAndOrangeSquare(obj);
+};
 
 // 5. Три фигуры одного любого цвета кроме белого.
 export const validateFieldN5 = () => false;
