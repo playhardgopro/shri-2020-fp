@@ -24,8 +24,6 @@ import {
   filter,
   gte,
   length,
-  uniq,
-  any,
   or,
 } from 'ramda';
 
@@ -53,9 +51,9 @@ const isCircleOrange = isCircle('orange');
 //#endregion
 
 //#region white
-const isWhite = (shape) => shape === 'white';
+// const isWhite = (shape) => shape === 'white';
 const isStarWhite = isStar('white');
-const isSquareWhite = isSquare('white');
+// const isSquareWhite = isSquare('white');
 const isTriangleWhite = isTriangle('white');
 const isCircleWhite = isCircle('white');
 //#endregion
@@ -63,16 +61,16 @@ const isCircleWhite = isCircle('white');
 //#region red
 const isRed = (shape) => shape === 'red';
 const isStarRed = isStar('red');
-const isSquareRed = isSquare('red');
-const isTriangleRed = isTriangle('red');
-const isCircleRed = isCircle('red');
+// const isSquareRed = isSquare('red');
+// const isTriangleRed = isTriangle('red');
+// const isCircleRed = isCircle('red');
 //#endregion
 
 //#region blue
 const isBlue = (shape) => shape === 'blue';
-const isStarBlue = isStar('blue');
-const isSquareBlue = isSquare('blue');
-const isTriangleBlue = isTriangle('blue');
+// const isStarBlue = isStar('blue');
+// const isSquareBlue = isSquare('blue');
+// const isTriangleBlue = isTriangle('blue');
 const isCircleBlue = isCircle('blue');
 //#endregion
 
@@ -132,7 +130,14 @@ export const validateFieldN5 = (shapes) => {
 };
 
 // 6. Две зеленые фигуры (одна из них треугольник), еще одна любая красная.
-export const validateFieldN6 = () => false;
+export const validateFieldN6 = (shapes) => {
+  const colorsOfAllShapes = values(shapes);
+  const greenTriangle = isTriangleGreen(shapes);
+  const oneRedShape = equals(length(filter(isRed, colorsOfAllShapes)), 1);
+  const twoGreenShapes = equals(length(filter(isGreen, colorsOfAllShapes)), 2);
+  const twoGreenShapesIncludingTriangle = and(greenTriangle, twoGreenShapes);
+  return and(twoGreenShapesIncludingTriangle, oneRedShape);
+};
 
 // 7. Все фигуры оранжевые.
 export const validateFieldN7 = (shapes) => {
