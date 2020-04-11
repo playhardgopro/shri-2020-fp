@@ -25,7 +25,6 @@ import {
   prop,
   modulo,
   multiply,
-  tap,
 } from 'ramda';
 import Api from '../tools/api';
 
@@ -68,15 +67,18 @@ const processSequence = async ({
     writeLog(integerValue);
 
     // 4. C помощью API /numbers/base перевести из 10-й системы счисления в двоичную, результат записать в writeLog
-    const { result } = await getTransformedNumber({
-      from: 10,
-      to: 2,
-      number: integerValue,
-    });
-    writeLog(result);
+    const getResult = prop('result');
+    const transformedNumber = getResult(
+      await getTransformedNumber({
+        from: 10,
+        to: 2,
+        number: integerValue,
+      })
+    );
+    writeLog(transformedNumber);
 
     // 5. Взять кол-во символов в полученном от API числе записать в writeLog
-    const binaryValueLength = length(result);
+    const binaryValueLength = length(transformedNumber);
     writeLog(binaryValueLength);
 
     // 6. Возвести в квадрат с помощью Javascript записать в writeLog
@@ -89,10 +91,10 @@ const processSequence = async ({
 
     // 8. C помощью API /animals.tech/id/name получить случайное животное используя полученный остаток в качестве id
     const animal = await getAnimalById(remainderValue);
-    writeLog(prop('result')(animal));
+    writeLog(getResult(animal));
 
     // 9. Завершить цепочку вызовом handleSuccess в который в качестве аргумента положить результат полученный на предыдущем шаге
-    handleSuccess(prop('result')(animal));
+    handleSuccess(getResult(animal));
   } catch (error) {
     handleError(error);
   }
