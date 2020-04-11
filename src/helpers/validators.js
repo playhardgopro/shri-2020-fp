@@ -25,6 +25,7 @@ import {
   gte,
   length,
   or,
+  any,
 } from 'ramda';
 
 //#region shapes
@@ -123,10 +124,12 @@ export const validateFieldN5 = (shapes) => {
     length(filter(isOrange, colorsOfAllShapes)),
     3
   );
-  return or(
+  return any(equals(true))([
     threeGreenShapes,
-    or(threeRedShapes, or(threeBlueShapes, threeOrangeShapes))
-  );
+    threeBlueShapes,
+    threeOrangeShapes,
+    threeRedShapes,
+  ]);
 };
 
 // 6. Две зеленые фигуры (одна из них треугольник), еще одна любая красная.
