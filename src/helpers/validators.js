@@ -22,9 +22,11 @@ import {
   and,
   values,
   filter,
-  gte,
+  all,
+  lte,
   length,
-  or,
+  compose,
+  __,
   any,
 } from 'ramda';
 
@@ -75,6 +77,8 @@ const isBlue = (shape) => shape === 'blue';
 const isCircleBlue = isCircle('blue');
 //#endregion
 
+const isLength = compose(equals, length);
+
 // 1. Красная звезда, зеленый квадрат, все остальные белые.
 export const validateFieldN1 = (shapes) => {
   const redStarAndGreenSquare = allPass([
@@ -87,18 +91,15 @@ export const validateFieldN1 = (shapes) => {
 };
 
 // 2. Как минимум две фигуры зеленые.
-export const validateFieldN2 = (shapes) => {
-  const colorsOfAllShapes = values(shapes);
-  const greenShapesAmount = length(filter(isGreen, colorsOfAllShapes));
-  return gte(greenShapesAmount, 2);
-};
+export const validateFieldN2 = (shapes) =>
+  compose(lte(2), length, values, filter(equals('green')))(shapes);
 
 // 3. Количество красных фигур равно кол-ву синих.
 export const validateFieldN3 = (shapes) => {
   const colorsOfAllShapes = values(shapes);
-  const redShapesAmount = length(filter(isRed, colorsOfAllShapes));
-  const blueShapesAmount = length(filter(isBlue, colorsOfAllShapes));
-  return equals(redShapesAmount, blueShapesAmount);
+  return isLength(filter(isRed, colorsOfAllShapes))(
+    length(filter(isBlue, colorsOfAllShapes))
+  );
 };
 
 // 4. Синий круг, красная звезда, оранжевый квадрат
@@ -114,16 +115,11 @@ export const validateFieldN4 = (shapes) => {
 // 5. Три фигуры одного любого цвета кроме белого.
 export const validateFieldN5 = (shapes) => {
   const colorsOfAllShapes = values(shapes);
-  const threeGreenShapes = equals(
-    length(filter(isGreen, colorsOfAllShapes)),
-    3
-  );
-  const threeRedShapes = equals(length(filter(isRed, colorsOfAllShapes)), 3);
-  const threeBlueShapes = equals(length(filter(isBlue, colorsOfAllShapes)), 3);
-  const threeOrangeShapes = equals(
-    length(filter(isOrange, colorsOfAllShapes)),
-    3
-  );
+  const filteredByColor = filter(__, colorsOfAllShapes);
+  const threeGreenShapes = isLength(filteredByColor(isGreen))(3);
+  const threeRedShapes = isLength(filteredByColor(isRed))(3);
+  const threeBlueShapes = isLength(filteredByColor(isBlue))(3);
+  const threeOrangeShapes = isLength(filteredByColor(isOrange))(3);
   return any(equals(true))([
     threeGreenShapes,
     threeBlueShapes,
@@ -136,10 +132,9 @@ export const validateFieldN5 = (shapes) => {
 export const validateFieldN6 = (shapes) => {
   const colorsOfAllShapes = values(shapes);
   const greenTriangle = isTriangleGreen(shapes);
-  const oneRedShape = equals(length(filter(isRed, colorsOfAllShapes)), 1);
-  const twoGreenShapes = equals(length(filter(isGreen, colorsOfAllShapes)), 2);
-  const twoGreenShapesIncludingTriangle = and(greenTriangle, twoGreenShapes);
-  return and(twoGreenShapesIncludingTriangle, oneRedShape);
+  const oneRedShape = isLength(filter(isRed, colorsOfAllShapes))(1);
+  const twoGreenShapes = isLength(filter(isGreen, colorsOfAllShapes))(2);
+  return all(equals(true))([greenTriangle, twoGreenShapes, oneRedShape]);
 };
 
 // 7. Все фигуры оранжевые.
