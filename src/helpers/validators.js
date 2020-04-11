@@ -19,7 +19,6 @@ import {
   not,
   prop,
   equals,
-  and,
   values,
   filter,
   all,
@@ -172,5 +171,8 @@ export const validateFieldN10 = (shapes) => {
   const triangleAndSquareHaveSameColor = equals(triangleColor, squareColor);
   const triangleColorIsNotWhite = not(equals(triangleColor, 'white'));
 
-  return and(triangleAndSquareHaveSameColor, triangleColorIsNotWhite);
+  return all(equals(true))([
+    triangleAndSquareHaveSameColor,
+    triangleColorIsNotWhite,
+  ]);
 };
